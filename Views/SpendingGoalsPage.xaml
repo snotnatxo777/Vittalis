@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.SpendingGoalsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Metas de Gastos">
+
+    <ScrollView>
+        <StackLayout Spacing="20">
+
+            <!--  Seletor de Período  -->
+            <StackLayout Padding="15" Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Período das Metas" />
+
+                <Frame
+                    Padding="15"
+                    BackgroundColor="LightGreen"
+                    CornerRadius="8"
+                    HasShadow="True">
+                    <StackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding SelectedPeriodText}" />
+
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="15">
+
+                            <Button
+                                BackgroundColor="DarkGreen"
+                                Clicked="OnPreviousMonthClicked"
+                                Text="← Anterior"
+                                TextColor="White"
+                                WidthRequest="100" />
+
+                            <Button
+                                BackgroundColor="Green"
+                                Clicked="OnAddGoalClicked"
+                                Text="+ Nova Meta"
+                                TextColor="White"
+                                WidthRequest="100" />
+
+                            <Button
+                                BackgroundColor="DarkGreen"
+                                Clicked="OnNextMonthClicked"
+                                Text="Próximo →"
+                                TextColor="White"
+                                WidthRequest="100" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Resumo Geral  -->
+            <Grid
+                Margin="15"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="10">
+
+                <!--  Card Orçamento Total  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Orçamento Total" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalBudget, StringFormat='{0:C}'}"
+                            TextColor="Blue" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Gasto Atual  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="15"
+                    BackgroundColor="LightCoral"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Gasto Atual" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalSpent, StringFormat='{0:C}'}"
+                            TextColor="Red" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Progresso Geral  -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Padding="15"
+                    BackgroundColor="LightYellow"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Progresso Geral" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding OverallProgress, StringFormat='{0:F1}%'}"
+                            TextColor="Orange" />
+                        <Label
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            Text="{Binding GoalsOverBudget, StringFormat='{0} meta(s) acima do orçamento'}"
+                            TextColor="Red" />
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <!--  Lista de metas  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Metas por Categoria" />
+
+                <CollectionView ItemsSource="{Binding SpendingGoals}" VerticalOptions="FillAndExpand">
+
+                    <CollectionView.EmptyView>
+                        <StackLayout
+                            Padding="50"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                            <Label
+                                FontSize="48"
+                                HorizontalOptions="Center"
+                                Text="🎯" />
+                            <Label
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="Nenhuma meta cadastrada para este período"
+                                TextColor="Gray" />
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Frame
+                                    Margin="5,2"
+                                    Padding="15"
+                                    BackgroundColor="White"
+                                    CornerRadius="8"
+                                    HasShadow="True">
+
+                                    <StackLayout Spacing="10">
+                                        <!--  Header da meta  -->
+                                        <Grid ColumnDefinitions="40,*,Auto,40">
+
+                                            <!--  Ícone da categoria  -->
+                                            <Label
+                                                Grid.Column="0"
+                                                FontSize="20"
+                                                Text="{Binding Category, Converter={StaticResource CategoryToIconConverter}}"
+                                                VerticalOptions="Center" />
+
+                                            <!--  Nome da categoria  -->
+                                            <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding Category, Converter={StaticResource CategoryToNameConverter}}"
+                                                    TextColor="DimGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    IsVisible="{Binding Account, Converter={StaticResource NotNullConverter}}"
+                                                    Text="{Binding Account.Name}"
+                                                    TextColor="Purple" />
+                                            </StackLayout>
+
+                                            <!--  Status  -->
+                                            <Label
+                                                Grid.Column="2"
+                                                FontAttributes="Bold"
+                                                FontSize="12"
+                                                Text="{Binding ProgressStatus}"
+                                                TextColor="{Binding ProgressColor}"
+                                                VerticalOptions="Center" />
+
+                                            <!--  Menu  -->
+                                            <Button
+                                                Grid.Column="3"
+                                                BackgroundColor="Transparent"
+                                                Clicked="OnMenuClicked"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="16"
+                                                Text="⋮"
+                                                TextColor="Gray" />
+                                        </Grid>
+
+                                        <!--  Valores  -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label
+                                                Grid.Column="0"
+                                                FontSize="14"
+                                                Text="{Binding CurrentSpent, StringFormat='Gasto: {0:C}'}"
+                                                TextColor="DimGray"
+                                                VerticalOptions="Center" />
+                                            <Label
+                                                Grid.Column="1"
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding MonthlyLimit, StringFormat='Limite: {0:C}'}"
+                                                VerticalOptions="Center" />
+                                        </Grid>
+
+                                        <!--  Barra de progresso  -->
+                                        <StackLayout>
+                                            <ProgressBar Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}" ProgressColor="{Binding ProgressColor}" />
+                                            <Label
+                                                FontSize="12"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding ProgressPercentage, StringFormat='{0:F1}% utilizado'}"
+                                                TextColor="Gray" />
+                                        </StackLayout>
+
+                                        <!--  Valor restante  -->
+                                        <Label
+                                            FontSize="12"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding RemainingAmount, StringFormat='Restante: {0:C}'}"
+                                            TextColor="{Binding ProgressColor}" />
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="Blue" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

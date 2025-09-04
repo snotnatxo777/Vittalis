@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.ComparisonPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Comparativos">
+
+    <ScrollView>
+        <StackLayout Spacing="20">
+
+            <!--  Controles  -->
+            <StackLayout Padding="15" Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Análise Comparativa" />
+
+                <!--  Seletor de Período  -->
+                <Frame
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="8"
+                    HasShadow="True">
+                    <StackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="{Binding SelectedPeriodText}" />
+
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="10">
+
+                            <Button
+                                BackgroundColor="DarkBlue"
+                                Clicked="OnPreviousMonthClicked"
+                                Text="← Anterior"
+                                TextColor="White"
+                                WidthRequest="90" />
+
+                            <Button
+                                BackgroundColor="Blue"
+                                Clicked="OnSelectAccountClicked"
+                                Text="Conta"
+                                TextColor="White"
+                                WidthRequest="70" />
+
+                            <Button
+                                BackgroundColor="DarkBlue"
+                                Clicked="OnNextMonthClicked"
+                                Text="Próximo →"
+                                TextColor="White"
+                                WidthRequest="90" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+
+                <!--  Filtro de Conta  -->
+                <Frame
+                    Padding="10"
+                    BackgroundColor="LightGray"
+                    CornerRadius="5">
+                    <Label
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        Text="{Binding SelectedAccountText}"
+                        TextColor="DimGray" />
+                </Frame>
+            </StackLayout>
+
+            <!--  Comparativo Principal  -->
+            <StackLayout Padding="15" IsVisible="{Binding ComparisonReport, Converter={StaticResource NotNullConverter}}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Comparação com Período Anterior" />
+
+                <!--  Resumo Geral  -->
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10"
+                    RowDefinitions="Auto,Auto,Auto"
+                    RowSpacing="10">
+
+                    <!--  Headers  -->
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="{Binding ComparisonReport.CurrentPeriod.PeriodName}"
+                        TextColor="DimGray" />
+
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="{Binding ComparisonReport.PreviousPeriod.PeriodName}"
+                        TextColor="DimGray" />
+
+                    <!--  Receitas  -->
+                    <Frame
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Padding="10"
+                        BackgroundColor="LightGreen"
+                        CornerRadius="8">
+                        <StackLayout>
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Receitas"
+                                TextColor="DimGray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding ComparisonReport.CurrentPeriod.TotalIncome, StringFormat='{0:C}'}"
+                                TextColor="DimGray" />
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Padding="10"
+                        BackgroundColor="LightGray"
+                        CornerRadius="8">
+                        <StackLayout>
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Receitas"
+                                TextColor="DimGray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding ComparisonReport.PreviousPeriod.TotalIncome, StringFormat='{0:C}'}"
+                                TextColor="DimGray" />
+                        </StackLayout>
+                    </Frame>
+
+                    <!--  Despesas  -->
+                    <Frame
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Padding="10"
+                        BackgroundColor="LightCoral"
+                        CornerRadius="8">
+                        <StackLayout>
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Despesas"
+                                TextColor="DimGray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding ComparisonReport.CurrentPeriod.TotalExpense, StringFormat='{0:C}'}"
+                                TextColor="DimGray" />
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Padding="10"
+                        BackgroundColor="LightGray"
+                        CornerRadius="8">
+                        <StackLayout>
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Despesas"
+                                TextColor="DimGray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding ComparisonReport.PreviousPeriod.TotalExpense, StringFormat='{0:C}'}"
+                                TextColor="DimGray" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <!--  Variações  -->
+                <Frame
+                    Margin="0,10"
+                    Padding="15"
+                    BackgroundColor="LightYellow"
+                    CornerRadius="8"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Variações"
+                            TextColor="DimGray" />
+
+                        <Grid
+                            ColumnDefinitions="*,Auto,Auto"
+                            RowDefinitions="Auto,Auto,Auto"
+                            RowSpacing="5">
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Text="Receitas:"
+                                TextColor="DimGray" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="{Binding ComparisonReport.IncomeDifference, StringFormat='{0:C}'}"
+                                TextColor="Green" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Text="{Binding ComparisonReport.IncomeChangePercentage, StringFormat='({0:F1}%)'}"
+                                TextColor="Green" />
+
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Text="Despesas:"
+                                TextColor="DimGray" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="{Binding ComparisonReport.ExpenseDifference, StringFormat='{0:C}'}"
+                                TextColor="Red" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Text="{Binding ComparisonReport.ExpenseChangePercentage, StringFormat='({0:F1}%)'}"
+                                TextColor="Red" />
+
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Text="Saldo:"
+                                TextColor="DimGray" />
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="{Binding ComparisonReport.BalanceDifference, StringFormat='{0:C}'}"
+                                TextColor="{Binding ComparisonReport.OverallTrendColor}" />
+                            <Label
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Text="{Binding ComparisonReport.OverallTrend}"
+                                TextColor="{Binding ComparisonReport.OverallTrendColor}" />
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Tendência Mensal  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Evolução no Ano" />
+
+                <CollectionView HeightRequest="200" ItemsSource="{Binding MonthlyTrend}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="10" Orientation="Horizontal" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Padding="10"
+                                BackgroundColor="White"
+                                CornerRadius="8"
+                                HasShadow="True"
+                                WidthRequest="120">
+                                <StackLayout Spacing="5">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding PeriodName}"
+                                        TextColor="DimGray" />
+
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding TotalIncome, StringFormat='R: {0:C0}'}"
+                                        TextColor="Green" />
+
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding TotalExpense, StringFormat='D: {0:C0}'}"
+                                        TextColor="Red" />
+
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding Balance, StringFormat='S: {0:C0}'}"
+                                        TextColor="Blue" />
+
+                                    <ProgressBar Progress="{Binding SavingsRate, Converter={StaticResource PercentageToProgressConverter}}" ProgressColor="Green" />
+
+                                    <Label
+                                        FontSize="10"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding SavingsRate, StringFormat='Poupança: {0:F0}%'}"
+                                        TextColor="Gray" />
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="Blue" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.AccountsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Minhas Contas">
+
+    <StackLayout>
+        <!--  Botão Nova Conta  -->
+        <Button
+            Margin="10"
+            BackgroundColor="Green"
+            Clicked="OnAddAccountClicked"
+            Text="+ Nova Conta"
+            TextColor="White" />
+
+        <!--  Lista de contas  -->
+        <CollectionView
+            BackgroundColor="Transparent"
+            ItemsSource="{Binding Accounts}"
+            VerticalOptions="FillAndExpand">
+
+            <CollectionView.EmptyView>
+                <StackLayout
+                    Padding="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="48"
+                        HorizontalOptions="Center"
+                        Text="🏦" />
+                    <Label
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="Nenhuma conta encontrada"
+                        TextColor="Gray" />
+                </StackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10,5">
+                        <Frame
+                            Margin="5,2"
+                            Padding="15"
+                            BackgroundColor="White"
+                            CornerRadius="8"
+                            HasShadow="True">
+
+                            <Grid ColumnDefinitions="50,*,Auto">
+                                <!--  Ícone  -->
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="24"
+                                    Text="{Binding Type, Converter={StaticResource AccountTypeToIconConverter}}"
+                                    VerticalOptions="Center" />
+
+                                <!--  Informações da conta  -->
+                                <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding Name}"
+                                        TextColor="DimGray" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding Type, Converter={StaticResource AccountTypeToNameConverter}}"
+                                        TextColor="Gray" />
+                                </StackLayout>
+
+                                <!--  Saldo  -->
+                                <Label
+                                    Grid.Column="2"
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    Text="{Binding CurrentBalance, StringFormat='{0:C}'}"
+                                    TextColor="Blue"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Cartões Vinculados  -->
+        <StackLayout Padding="15">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Cartões de Crédito"
+                TextColor="DimGray" />
+
+            <Button
+                BackgroundColor="Crimson"
+                Clicked="OnManageCreditCardsClicked"
+                Text="Gerenciar Cartões"
+                TextColor="White" />
+        </StackLayout>
+
+        <!--  Botão para cartões  -->
+        <Button
+            Margin="15"
+            BackgroundColor="Crimson"
+            Clicked="OnCreditCardsClicked"
+            Text="Gerenciar Cartões de Crédito"
+            TextColor="White" />
+
+        <!--  Loading indicator  -->
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center"
+            Color="Blue" />
+    </StackLayout>
+
+</ContentPage>

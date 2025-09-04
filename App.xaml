@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+    x:Class="Vittalis.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:Vittalis.Helpers">
+    <Application.Resources>
+        <ResourceDictionary>
+            <helpers:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
+            <helpers:ProfitLossColorConverter x:Key="ProfitLossColorConverter" />
+            <helpers:AccountTypeToNameConverter x:Key="AccountTypeToNameConverter" />
+            <helpers:AccountTypeToIconConverter x:Key="AccountTypeToIconConverter" />
+            <helpers:FrequencyToNameConverter x:Key="FrequencyToNameConverter" />
+            <helpers:TransactionTypeToTextConverter x:Key="TransactionTypeToTextConverter" />
+            <helpers:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
+            <helpers:CategoryToIconConverter x:Key="CategoryToIconConverter" />
+            <helpers:NotNullConverter x:Key="NotNullConverter" />
+            <helpers:PercentageToProgressConverter x:Key="PercentageToProgressConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

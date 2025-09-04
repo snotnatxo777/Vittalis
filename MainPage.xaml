@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ScrollView>
+        <StackLayout
+            Padding="30,0"
+            Spacing="25"
+            VerticalOptions="Center">
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Vittalis - Sistema Financeiro" />
+
+            <Button
+                BackgroundColor="Blue"
+                Clicked="OnDashboardClicked"
+                Text="Dashboard"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="OnTransactionsClicked"
+                Text="Ver Transações"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Purple"
+                Clicked="OnReportsClicked"
+                Text="Relatórios"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Orange"
+                Clicked="OnInvestmentsClicked"
+                Text="Investimentos"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Teal"
+                Clicked="OnAccountsClicked"
+                Text="Minhas Contas"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Coral"
+                Clicked="OnRecurringTransactionsClicked"
+                Text="Transações Recorrentes"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Gold"
+                Clicked="OnSpendingGoalsClicked"
+                Text="Metas de Gastos"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="DeepSkyBlue"
+                Clicked="OnComparisonClicked"
+                Text="Comparativos"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Crimson"
+                Clicked="OnCreditCardsClicked"
+                Text="Cartões de Crédito"
+                TextColor="White" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

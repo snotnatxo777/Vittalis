@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.RecurringTransactionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Transações Recorrentes">
+
+    <StackLayout>
+
+        <!--  Header com botões  -->
+        <StackLayout
+            Padding="10"
+            Orientation="Horizontal"
+            Spacing="10">
+
+            <Button
+                BackgroundColor="Green"
+                Clicked="OnAddRecurringTransactionClicked"
+                HorizontalOptions="FillAndExpand"
+                Text="+ Nova Recorrência"
+                TextColor="White" />
+
+            <Button
+                BackgroundColor="Blue"
+                Clicked="OnProcessPendingClicked"
+                Text="{Binding PendingCount, StringFormat='Processar ({0})'}"
+                TextColor="White"
+                WidthRequest="120" />
+        </StackLayout>
+
+        <!--  Informações sobre pendentes  -->
+        <Frame
+            Margin="10,0"
+            BackgroundColor="LightYellow"
+            CornerRadius="5"
+            HasShadow="True"
+            IsVisible="{Binding PendingCount, Converter={StaticResource CountToVisibilityConverter}}">
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    FontSize="16"
+                    Text="⚠️"
+                    VerticalOptions="Center" />
+                <Label
+                    HorizontalOptions="FillAndExpand"
+                    Text="{Binding PendingCount, StringFormat='{0} transação(ões) pendente(s) para processar'}"
+                    VerticalOptions="Center" />
+            </StackLayout>
+        </Frame>
+
+        <!--  Lista de transações recorrentes  -->
+        <CollectionView
+            BackgroundColor="Transparent"
+            ItemsSource="{Binding RecurringTransactions}"
+            VerticalOptions="FillAndExpand">
+
+            <CollectionView.EmptyView>
+                <StackLayout
+                    Padding="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="48"
+                        HorizontalOptions="Center"
+                        Text="🔄" />
+                    <Label
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="Nenhuma transação recorrente cadastrada"
+                        TextColor="Gray" />
+                </StackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10,5">
+                        <Frame
+                            Margin="5,2"
+                            Padding="15"
+                            BackgroundColor="White"
+                            CornerRadius="8"
+                            HasShadow="True">
+
+                            <Grid ColumnDefinitions="*,Auto,40">
+
+                                <!--  Informações da transação recorrente  -->
+                                <StackLayout Grid.Column="0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding Description}"
+                                        TextColor="DimGray" />
+
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding Frequency, Converter={StaticResource FrequencyToNameConverter}}"
+                                            TextColor="Blue" />
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding Account.Name}"
+                                            TextColor="Purple" />
+                                    </StackLayout>
+
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding NextOccurrence, StringFormat='Próxima: {0:dd/MM/yyyy}'}"
+                                        TextColor="Orange" />
+                                </StackLayout>
+
+                                <!--  Valor  -->
+                                <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Amount, StringFormat='{0:C}'}"
+                                        TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"
+                                        VerticalOptions="Center" />
+
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Type, Converter={StaticResource TransactionTypeToTextConverter}}"
+                                        TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
+                                </StackLayout>
+
+                                <!--  Menu Button  -->
+                                <Button
+                                    Grid.Column="2"
+                                    BackgroundColor="Transparent"
+                                    Clicked="OnMenuClicked"
+                                    CommandParameter="{Binding .}"
+                                    FontSize="16"
+                                    Text="⋮"
+                                    TextColor="Gray" />
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Loading indicator  -->
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center"
+            Color="Blue" />
+
+    </StackLayout>
+
+</ContentPage>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Dashboard">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <!--  Header  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Resumo Financeiro" />
+
+            <!--  Cards de Resumo  -->
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="10">
+
+                <!--  Card Receitas  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="15"
+                    BackgroundColor="LightGreen"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="💰 Receitas" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalIncome, StringFormat='{0:C}'}" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Despesas  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="15"
+                    BackgroundColor="LightCoral"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="💸 Despesas" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalExpenses, StringFormat='{0:C}'}" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Saldo  -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="💳 Saldo Total" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="28"
+                            HorizontalOptions="Center"
+                            Text="{Binding Balance, StringFormat='{0:C}'}" />
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <!--  Transações Recentes  -->
+            <StackLayout>
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Últimas Transações" />
+
+                <CollectionView HeightRequest="300" ItemsSource="{Binding RecentTransactions}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="0,5">
+                                <Frame
+                                    Padding="10"
+                                    BackgroundColor="White"
+                                    CornerRadius="5"
+                                    HasShadow="True">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackLayout Grid.Column="0">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding Description}"
+                                                TextColor="DimGray" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"
+                                                TextColor="Gray" />
+                                        </StackLayout>
+                                        <Label
+                                            Grid.Column="1"
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            Text="{Binding Amount, StringFormat='{0:C}'}"
+                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Botões de Navegação  -->
+            <StackLayout Spacing="10">
+                <Button
+                    BackgroundColor="Blue"
+                    Clicked="OnViewAllTransactionsClicked"
+                    Text="Ver Todas as Transações"
+                    TextColor="White" />
+
+                <Button
+                    BackgroundColor="Green"
+                    Clicked="OnAddTransactionClicked"
+                    Text="Nova Transação"
+                    TextColor="White" />
+            </StackLayout>
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

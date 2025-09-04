@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.AddTransactionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Nova Transação">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Adicionar Nova Transação" />
+
+            <!--  Descrição  -->
+            <StackLayout>
+                <Label FontSize="16" Text="Descrição:" />
+                <Entry x:Name="DescriptionEntry" Placeholder="Ex: Supermercado, Salário..." />
+            </StackLayout>
+
+            <!--  Valor  -->
+            <StackLayout>
+                <Label FontSize="16" Text="Valor:" />
+                <Entry
+                    x:Name="AmountEntry"
+                    Keyboard="Numeric"
+                    Placeholder="0,00" />
+            </StackLayout>
+
+            <!--  Tipo  -->
+            <StackLayout>
+                <Label FontSize="16" Text="Tipo:" />
+                <Picker x:Name="TypePicker" Title="Selecione o tipo">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Receita</x:String>
+                            <x:String>Despesa</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </StackLayout>
+
+            <!--  Data  -->
+            <StackLayout>
+                <Label FontSize="16" Text="Data:" />
+                <DatePicker x:Name="DatePicker" />
+            </StackLayout>
+
+            <!--  Botões  -->
+            <StackLayout
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Spacing="20">
+                <Button
+                    BackgroundColor="Green"
+                    Clicked="OnSaveClicked"
+                    Text="Salvar"
+                    TextColor="White" />
+
+                <Button
+                    BackgroundColor="Gray"
+                    Clicked="OnCancelClicked"
+                    Text="Cancelar"
+                    TextColor="White" />
+            </StackLayout>
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

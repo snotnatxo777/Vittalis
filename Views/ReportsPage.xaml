@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.ReportsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    Title="Relatórios Financeiros">
+
+    <ScrollView>
+        <StackLayout Spacing="20">
+
+            <!--  Seletor de Período  -->
+            <StackLayout Padding="15" Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Período do Relatório" />
+
+                <Frame
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="8"
+                    HasShadow="True">
+                    <StackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding SelectedPeriodText}" />
+
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="15">
+
+                            <Button
+                                BackgroundColor="DarkBlue"
+                                Clicked="OnPreviousMonthClicked"
+                                Text="← Anterior"
+                                TextColor="White"
+                                WidthRequest="100" />
+
+                            <Button
+                                BackgroundColor="Green"
+                                Clicked="OnSelectDateClicked"
+                                Text="Escolher"
+                                TextColor="White"
+                                WidthRequest="80" />
+
+                            <Button
+                                BackgroundColor="DarkBlue"
+                                Clicked="OnNextMonthClicked"
+                                Text="Próximo →"
+                                TextColor="White"
+                                WidthRequest="100" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Seletor de Conta  -->
+            <StackLayout Padding="15" Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Filtrar por Conta" />
+
+                <Frame
+                    Padding="15"
+                    BackgroundColor="LightCoral"
+                    CornerRadius="8"
+                    HasShadow="True">
+                    <StackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="{Binding SelectedAccountText}" />
+
+                        <StackLayout
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="10">
+
+                            <Button
+                                BackgroundColor="DarkRed"
+                                Clicked="OnSelectAccountClicked"
+                                Text="Escolher Conta"
+                                TextColor="White"
+                                WidthRequest="120" />
+
+                            <Button
+                                BackgroundColor="Gray"
+                                Clicked="OnClearAccountFilterClicked"
+                                Text="Todas"
+                                TextColor="White"
+                                WidthRequest="80" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Cards de resumo  -->
+            <Grid
+                Margin="15"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="10">
+
+                <!--  Card Receitas  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="15"
+                    BackgroundColor="LightGreen"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Receitas" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalIncome, StringFormat='{0:C}'}"
+                            TextColor="Green" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Despesas  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="15"
+                    BackgroundColor="LightCoral"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Despesas" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalExpense, StringFormat='{0:C}'}"
+                            TextColor="Red" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Card Saldo  -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="Saldo do Período" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="24"
+                            HorizontalOptions="Center"
+                            Text="{Binding Balance, StringFormat='{0:C}'}"
+                            TextColor="Blue" />
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <!--  Gráfico de Pizza - Despesas  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Despesas por Categoria" />
+
+                <Frame
+                    Margin="0,10"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HasShadow="True"
+                    HeightRequest="250">
+                    <microcharts:ChartView x:Name="ExpenseChart" BackgroundColor="Transparent" />
+                </Frame>
+
+                <!--  Lista detalhada de despesas  -->
+                <CollectionView HeightRequest="150" ItemsSource="{Binding ExpensesByCategory}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Margin="0,3"
+                                Padding="5"
+                                ColumnDefinitions="40,*,Auto,60">
+
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="16"
+                                    Text="{Binding CategoryIcon}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="14"
+                                    Text="{Binding CategoryName}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="2"
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding Amount, StringFormat='{0:C}'}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="3"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Percentage, StringFormat='{0:F1}%'}"
+                                    TextColor="Gray"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Gráfico de Pizza - Receitas  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Receitas por Categoria" />
+
+                <Frame
+                    Margin="0,10"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HasShadow="True"
+                    HeightRequest="250">
+                    <microcharts:ChartView x:Name="IncomeChart" BackgroundColor="Transparent" />
+                </Frame>
+
+                <!--  Lista detalhada de receitas  -->
+                <CollectionView HeightRequest="120" ItemsSource="{Binding IncomesByCategory}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Margin="0,3"
+                                Padding="5"
+                                ColumnDefinitions="40,*,Auto,60">
+
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="16"
+                                    Text="{Binding CategoryIcon}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="14"
+                                    Text="{Binding CategoryName}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="2"
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    Text="{Binding Amount, StringFormat='{0:C}'}"
+                                    VerticalOptions="Center" />
+
+                                <Label
+                                    Grid.Column="3"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Percentage, StringFormat='{0:F1}%'}"
+                                    TextColor="Gray"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="Blue" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

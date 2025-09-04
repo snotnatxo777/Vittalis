@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.TransactionListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Transações">
+
+    <StackLayout>
+
+        <!--  Botão Nova Transação  -->
+        <Button
+            Margin="10"
+            BackgroundColor="Blue"
+            Clicked="OnAddTransactionClicked"
+            Text="+ Nova Transação"
+            TextColor="White" />
+
+        <!--  Filtros  -->
+        <StackLayout
+            Padding="10"
+            Orientation="Horizontal"
+            Spacing="10">
+            <SearchBar
+                x:Name="SearchBar"
+                HorizontalOptions="FillAndExpand"
+                Placeholder="Buscar por descrição..."
+                SearchButtonPressed="OnSearchButtonPressed"
+                TextChanged="OnSearchTextChanged" />
+
+            <Picker
+                x:Name="FilterPicker"
+                Title="Filtrar"
+                SelectedIndexChanged="OnFilterChanged"
+                WidthRequest="120">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Todos</x:String>
+                        <x:String>Receitas</x:String>
+                        <x:String>Despesas</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+        </StackLayout>
+
+        <!--  Lista de transações  -->
+        <CollectionView
+            BackgroundColor="Transparent"
+            ItemsSource="{Binding Transactions}"
+            VerticalOptions="FillAndExpand">
+
+            <!--  Mensagem quando vazio  -->
+            <CollectionView.EmptyView>
+                <StackLayout
+                    Padding="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="48"
+                        HorizontalOptions="Center"
+                        Text="💰" />
+                    <Label
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="Nenhuma transação encontrada"
+                        TextColor="Gray" />
+                </StackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10,5">
+                        <Frame
+                            Margin="5,2"
+                            Padding="15"
+                            BackgroundColor="White"
+                            CornerRadius="8"
+                            HasShadow="True">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnTransactionTapped" />
+                            </Frame.GestureRecognizers>
+
+                            <StackLayout>
+                                <Grid ColumnDefinitions="*,Auto,40">
+
+                                    <!--  Informações da transação  -->
+                                    <StackLayout Grid.Column="0">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="16"
+                                            Text="{Binding Description}"
+                                            TextColor="DimGray" />
+                                        <StackLayout Orientation="Horizontal" Spacing="10">
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"
+                                                TextColor="Gray" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding Category, Converter={StaticResource CategoryToNameConverter}}"
+                                                TextColor="Blue" />
+                                        </StackLayout>
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding Account.Name}"
+                                            TextColor="Purple" />
+                                    </StackLayout>
+
+                                    <!--  Valor  -->
+                                    <Label
+                                        Grid.Column="1"
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Amount, StringFormat='{0:C}'}"
+                                        TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"
+                                        VerticalOptions="Center" />
+
+                                    <!--  Menu Button  -->
+                                    <Button
+                                        Grid.Column="2"
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnMenuClicked"
+                                        CommandParameter="{Binding .}"
+                                        FontSize="16"
+                                        Text="⋮"
+                                        TextColor="Gray" />
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Loading indicator  -->
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center"
+            Color="Blue" />
+
+    </StackLayout>
+
+</ContentPage>

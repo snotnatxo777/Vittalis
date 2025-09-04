@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.CreditCardsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Cartões de Crédito">
+
+    <ScrollView>
+        <StackLayout Spacing="20">
+
+            <!--  Header com botões  -->
+            <StackLayout
+                Padding="15"
+                Orientation="Horizontal"
+                Spacing="10">
+
+                <Button
+                    BackgroundColor="Green"
+                    Clicked="OnAddCreditCardClicked"
+                    HorizontalOptions="FillAndExpand"
+                    Text="+ Novo Cartão"
+                    TextColor="White" />
+
+                <Button
+                    BackgroundColor="Blue"
+                    Clicked="OnAddTransactionClicked"
+                    Text="Nova Compra"
+                    TextColor="White"
+                    WidthRequest="120" />
+            </StackLayout>
+
+            <!--  Resumo Geral  -->
+            <Grid
+                Margin="15"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="10">
+
+                <!--  Limite Total  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Limite Total"
+                            TextColor="DimGray" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalCreditLimit, StringFormat='{0:C}'}"
+                            TextColor="DimGray" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Limite Usado  -->
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="15"
+                    BackgroundColor="LightCoral"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Limite Usado"
+                            TextColor="DimGray" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding TotalUsedLimit, StringFormat='{0:C}'}"
+                            TextColor="DimGray" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Uso Geral  -->
+                <Frame
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Padding="15"
+                    BackgroundColor="LightYellow"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Uso dos Cartões"
+                            TextColor="DimGray" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding OverallUsagePercentage, StringFormat='{0:F1}%'}"
+                            TextColor="DimGray" />
+                        <ProgressBar Progress="{Binding OverallUsagePercentage, Converter={StaticResource PercentageToProgressConverter}}" ProgressColor="Orange" />
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <!--  Lista de Cartões  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Meus Cartões"
+                    TextColor="DimGray" />
+
+                <CollectionView HeightRequest="250" ItemsSource="{Binding CreditCards}">
+
+                    <CollectionView.EmptyView>
+                        <StackLayout
+                            Padding="50"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                            <Label
+                                FontSize="48"
+                                HorizontalOptions="Center"
+                                Text="💳" />
+                            <Label
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="Nenhum cartão cadastrado"
+                                TextColor="Gray" />
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Frame
+                                    Margin="5,2"
+                                    Padding="15"
+                                    BackgroundColor="White"
+                                    CornerRadius="8"
+                                    HasShadow="True">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <!--  Informações do cartão  -->
+                                        <StackLayout Grid.Column="0">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding Name}"
+                                                TextColor="DimGray" />
+
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding LastFourDigits, StringFormat='**** {0}'}"
+                                                TextColor="Gray" />
+
+                                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding CurrentBalance, StringFormat='Usado: {0:C}'}"
+                                                    TextColor="Red" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding AvailableLimit, StringFormat='Disponível: {0:C}'}"
+                                                    TextColor="Green" />
+                                            </StackLayout>
+
+                                            <ProgressBar Progress="{Binding UsagePercentage, Converter={StaticResource PercentageToProgressConverter}}" ProgressColor="Orange" />
+                                        </StackLayout>
+
+                                        <!--  Menu  -->
+                                        <Button
+                                            Grid.Column="1"
+                                            BackgroundColor="Transparent"
+                                            Clicked="OnCardMenuClicked"
+                                            CommandParameter="{Binding .}"
+                                            FontSize="16"
+                                            Text="⋮"
+                                            TextColor="Gray" />
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Transações Recentes  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Compras Recentes"
+                    TextColor="DimGray" />
+
+                <CollectionView HeightRequest="200" ItemsSource="{Binding RecentTransactions}">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Frame
+                                    Margin="5,2"
+                                    Padding="10"
+                                    BackgroundColor="White"
+                                    CornerRadius="5"
+                                    HasShadow="True">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackLayout Grid.Column="0">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding Description}"
+                                                TextColor="DimGray" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding TransactionDate, StringFormat='{0:dd/MM/yyyy}'}"
+                                                TextColor="Gray" />
+                                        </StackLayout>
+
+                                        <Label
+                                            Grid.Column="1"
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            Text="{Binding Amount, StringFormat='{0:C}'}"
+                                            TextColor="Red"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Parcelamentos Ativos  -->
+            <StackLayout Padding="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Parcelamentos Ativos"
+                    TextColor="DimGray" />
+
+                <CollectionView HeightRequest="150" ItemsSource="{Binding ActiveInstallments}">
+
+                    <CollectionView.EmptyView>
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="Nenhum parcelamento ativo"
+                            TextColor="Gray" />
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Frame
+                                    Margin="5,2"
+                                    Padding="10"
+                                    BackgroundColor="White"
+                                    CornerRadius="5"
+                                    HasShadow="True">
+
+                                    <Grid ColumnDefinitions="*,Auto,Auto">
+                                        <StackLayout Grid.Column="0">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding Description}"
+                                                TextColor="DimGray" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding RemainingInstallments, StringFormat='{0} parcelas restantes'}"
+                                                TextColor="Gray" />
+                                        </StackLayout>
+
+                                        <Label
+                                            Grid.Column="1"
+                                            FontSize="12"
+                                            Text="{Binding InstallmentAmount, StringFormat='{0:C}/mês'}"
+                                            TextColor="Orange"
+                                            VerticalOptions="Center" />
+
+                                        <Label
+                                            Grid.Column="2"
+                                            FontAttributes="Bold"
+                                            FontSize="12"
+                                            Text="{Binding RemainingAmount, StringFormat='{0:C}'}"
+                                            TextColor="Red"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="Blue" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>
