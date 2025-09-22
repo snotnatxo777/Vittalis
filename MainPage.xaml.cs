@@ -208,4 +208,27 @@ public partial class MainPage : ContentPage
             await DisplayAlert("Erro", $"Erro ao carregar cartões de crédito: {ex.Message}", "OK");
         }
     }
+
+    // ✨ NOVO MÉTODO PARA RELATÓRIOS AVANÇADOS
+    private async void OnAdvancedReportsClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var serviceProvider = Handler?.MauiContext?.Services;
+            var advancedReportsPage = serviceProvider?.GetService<AdvancedReportsPage>();
+
+            if (advancedReportsPage != null)
+            {
+                await Navigation.PushAsync(advancedReportsPage);
+            }
+            else
+            {
+                await DisplayAlert("Erro", "Erro ao carregar relatórios avançados", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Erro de navegação: {ex.Message}", "OK");
+        }
+    }
 }

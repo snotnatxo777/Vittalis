@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.InvestmentPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Investimentos"
+    BackgroundColor="White">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryBlue">#2196F3</Color>
+            <Color x:Key="PrimaryGreen">#4CAF50</Color>
+            <Color x:Key="PrimaryRed">#F44336</Color>
+            <Color x:Key="LightGray">#F5F5F5</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <StackLayout Padding="15" Spacing="20">
+
+            <!--  Header com Resumo do Portfolio  -->
+            <Frame
+                Padding="20"
+                BackgroundColor="{StaticResource PrimaryBlue}"
+                CornerRadius="15"
+                HasShadow="True">
+                <StackLayout Spacing="15">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="💰 Resumo do Portfolio"
+                        TextColor="White" />
+
+                    <Grid
+                        ColumnDefinitions="*,*,*"
+                        ColumnSpacing="15"
+                        RowDefinitions="Auto,Auto">
+
+                        <!--  Valor Total  -->
+                        <StackLayout Grid.Row="0" Grid.Column="0">
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Valor Total"
+                                TextColor="White" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="{Binding TotalPortfolioValue, StringFormat='{0:C}'}"
+                                TextColor="White" />
+                        </StackLayout>
+
+                        <!--  Total Investido  -->
+                        <StackLayout Grid.Row="0" Grid.Column="1">
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Investido"
+                                TextColor="White" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="{Binding TotalInvested, StringFormat='{0:C}'}"
+                                TextColor="White" />
+                        </StackLayout>
+
+                        <!--  Resultado  -->
+                        <StackLayout Grid.Row="0" Grid.Column="2">
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="Resultado"
+                                TextColor="White" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="{Binding TotalProfitLoss, StringFormat='{0:C}'}"
+                                TextColor="{Binding PerformanceColor}" />
+                        </StackLayout>
+
+                        <!--  Performance  -->
+                        <Frame
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Padding="15"
+                            BackgroundColor="White"
+                            CornerRadius="10">
+                            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                                <Label
+                                    FontSize="16"
+                                    Text="📈 Rentabilidade: "
+                                    TextColor="DarkBlue"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="20"
+                                    Text="{Binding PerformanceText}"
+                                    TextColor="{Binding PerformanceColor}"
+                                    VerticalOptions="Center" />
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!--  Botões de Ação Principal  -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button
+                    Grid.Column="0"
+                    BackgroundColor="{StaticResource PrimaryGreen}"
+                    Clicked="OnAddTradeClicked"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="📈 Adicionar Trade"
+                    TextColor="White" />
+
+                <Button
+                    Grid.Column="1"
+                    BackgroundColor="{StaticResource PrimaryBlue}"
+                    Clicked="OnUpdatePricesClicked"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="🔄 Atualizar Preços"
+                    TextColor="White" />
+            </Grid>
+
+            <!--  Abas de Navegação  -->
+            <Frame
+                Padding="10"
+                BackgroundColor="{StaticResource LightGray}"
+                CornerRadius="15">
+                <ScrollView Orientation="Horizontal">
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <Button
+                            Padding="15,10"
+                            BackgroundColor="White"
+                            Clicked="OnTabChanged"
+                            CommandParameter="Portfolio"
+                            CornerRadius="20"
+                            FontSize="14"
+                            Text="📊 Portfolio"
+                            TextColor="{StaticResource PrimaryBlue}" />
+
+                        <Button
+                            Padding="15,10"
+                            BackgroundColor="White"
+                            Clicked="OnTabChanged"
+                            CommandParameter="Assets"
+                            CornerRadius="20"
+                            FontSize="14"
+                            Text="📈 Ativos"
+                            TextColor="{StaticResource PrimaryBlue}" />
+
+                        <Button
+                            Padding="15,10"
+                            BackgroundColor="White"
+                            Clicked="OnTabChanged"
+                            CommandParameter="Trades"
+                            CornerRadius="20"
+                            FontSize="14"
+                            Text="💹 Operações"
+                            TextColor="{StaticResource PrimaryBlue}" />
+
+                        <Button
+                            Padding="15,10"
+                            BackgroundColor="White"
+                            Clicked="OnTabChanged"
+                            CommandParameter="Dividends"
+                            CornerRadius="20"
+                            FontSize="14"
+                            Text="💰 Dividendos"
+                            TextColor="{StaticResource PrimaryBlue}" />
+
+                        <Button
+                            Padding="15,10"
+                            BackgroundColor="White"
+                            Clicked="OnTabChanged"
+                            CommandParameter="Goals"
+                            CornerRadius="20"
+                            FontSize="14"
+                            Text="🎯 Metas"
+                            TextColor="{StaticResource PrimaryBlue}" />
+                    </StackLayout>
+                </ScrollView>
+            </Frame>
+
+            <!--  Conteúdo da Aba Portfolio  -->
+            <StackLayout x:Name="PortfolioContent" IsVisible="True">
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="📊 Meu Portfolio"
+                                TextColor="DarkSlateGray"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Grid.Column="1"
+                                Padding="15,8"
+                                BackgroundColor="{StaticResource PrimaryBlue}"
+                                Clicked="OnExportClicked"
+                                CornerRadius="15"
+                                FontSize="12"
+                                Text="📄 Exportar"
+                                TextColor="White" />
+                        </Grid>
+
+                        <CollectionView BackgroundColor="Transparent" ItemsSource="{Binding Portfolio}">
+                            <CollectionView.EmptyView>
+                                <StackLayout Padding="40" HorizontalOptions="Center">
+                                    <Label
+                                        FontSize="48"
+                                        HorizontalOptions="Center"
+                                        Text="📈" />
+                                    <Label
+                                        FontSize="16"
+                                        HorizontalOptions="Center"
+                                        Text="Nenhum ativo no portfolio"
+                                        TextColor="Gray" />
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,5"
+                                        Padding="15"
+                                        BackgroundColor="{StaticResource LightGray}"
+                                        CornerRadius="12">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,30" RowSpacing="8">
+
+                                            <!--  Informações do Ativo  -->
+                                            <StackLayout Grid.Column="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding AssetSymbol}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding AssetName}"
+                                                    TextColor="Gray" />
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding TotalQuantity, StringFormat='{0} unidades'}"
+                                                    TextColor="Gray" />
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding WeightInPortfolio, StringFormat='Peso: {0:F1}%'}"
+                                                    TextColor="Blue" />
+                                            </StackLayout>
+
+                                            <!--  Valores  -->
+                                            <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="15"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding CurrentValue, StringFormat='{0:C}'}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="11"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding AveragePrice, StringFormat='PM: {0:C}'}"
+                                                    TextColor="Gray" />
+                                                <Label
+                                                    FontSize="11"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding CurrentPrice, StringFormat='Atual: {0:C}'}"
+                                                    TextColor="Blue" />
+                                            </StackLayout>
+
+                                            <!--  Performance  -->
+                                            <StackLayout Grid.Column="2" HorizontalOptions="End">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="14"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding ProfitLoss, StringFormat='{0:C}'}"
+                                                    TextColor="{Binding ProfitLoss, Converter={StaticResource ProfitLossColorConverter}}" />
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="13"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding ProfitLossPercentage, StringFormat='{0:F1}%'}"
+                                                    TextColor="{Binding ProfitLoss, Converter={StaticResource ProfitLossColorConverter}}" />
+                                                <Label
+                                                    FontSize="10"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding DividendsReceived, StringFormat='Div: {0:C}'}"
+                                                    TextColor="Green" />
+                                            </StackLayout>
+
+                                            <!--  Menu  -->
+                                            <Button
+                                                Grid.Column="3"
+                                                BackgroundColor="Transparent"
+                                                Clicked="OnItemMenuClicked"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="16"
+                                                Text="⋮"
+                                                TextColor="Gray" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Conteúdo da Aba Ativos  -->
+            <StackLayout x:Name="AssetsContent" IsVisible="False">
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="📈 Ativos Disponíveis"
+                                TextColor="DarkSlateGray"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Grid.Column="1"
+                                Padding="15,8"
+                                BackgroundColor="{StaticResource PrimaryGreen}"
+                                Clicked="OnAddAssetClicked"
+                                CornerRadius="15"
+                                FontSize="12"
+                                Text="➕ Adicionar"
+                                TextColor="White" />
+                        </Grid>
+
+                        <SearchBar
+                            x:Name="AssetSearchBar"
+                            BackgroundColor="{StaticResource LightGray}"
+                            Placeholder="Buscar ativo por símbolo ou nome..."
+                            TextChanged="OnSearchTextChanged" />
+
+                        <CollectionView BackgroundColor="Transparent" ItemsSource="{Binding Assets}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,3"
+                                        Padding="12"
+                                        BackgroundColor="{StaticResource LightGray}"
+                                        CornerRadius="10">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,30">
+
+                                            <StackLayout Grid.Column="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding Symbol}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Name}"
+                                                    TextColor="Gray" />
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding Type}"
+                                                    TextColor="Blue" />
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="14"
+                                                    Text="{Binding CurrentPrice, StringFormat='{0:C}'}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding DailyChangePercentage, StringFormat='{0:F2}%'}"
+                                                    TextColor="{Binding DailyChange, Converter={StaticResource ProfitLossColorConverter}}" />
+                                            </StackLayout>
+
+                                            <Label
+                                                Grid.Column="2"
+                                                FontSize="10"
+                                                Text="{Binding Status}"
+                                                TextColor="Green"
+                                                VerticalOptions="Center" />
+
+                                            <Button
+                                                Grid.Column="3"
+                                                BackgroundColor="Transparent"
+                                                Clicked="OnItemMenuClicked"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="16"
+                                                Text="⋮"
+                                                TextColor="Gray" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Conteúdo da Aba Operações  -->
+            <StackLayout x:Name="TradesContent" IsVisible="False">
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="💹 Operações Recentes"
+                            TextColor="DarkSlateGray" />
+
+                        <CollectionView BackgroundColor="Transparent" ItemsSource="{Binding RecentTrades}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,3"
+                                        Padding="12"
+                                        BackgroundColor="{StaticResource LightGray}"
+                                        CornerRadius="10">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,30">
+
+                                            <StackLayout Grid.Column="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding Asset.Symbol}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Type}"
+                                                    TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"
+                                                    TextColor="Gray" />
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                                <Label
+                                                    FontSize="13"
+                                                    Text="{Binding Quantity, StringFormat='{0} un'}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Price, StringFormat='{0:C}'}"
+                                                    TextColor="Blue" />
+                                            </StackLayout>
+
+                                            <Label
+                                                Grid.Column="2"
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding GrossValue, StringFormat='{0:C}'}"
+                                                TextColor="DarkSlateGray"
+                                                VerticalOptions="Center" />
+
+                                            <Button
+                                                Grid.Column="3"
+                                                BackgroundColor="Transparent"
+                                                Clicked="OnItemMenuClicked"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="16"
+                                                Text="⋮"
+                                                TextColor="Gray" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Conteúdo da Aba Dividendos  -->
+            <StackLayout x:Name="DividendsContent" IsVisible="False">
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="💰 Dividendos Recebidos"
+                                TextColor="DarkSlateGray"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Grid.Column="1"
+                                Padding="15,8"
+                                BackgroundColor="{StaticResource PrimaryGreen}"
+                                Clicked="OnAddDividendClicked"
+                                CornerRadius="15"
+                                FontSize="12"
+                                Text="➕ Registrar"
+                                TextColor="White" />
+                        </Grid>
+
+                        <Frame
+                            Padding="15"
+                            BackgroundColor="LightGreen"
+                            CornerRadius="10">
+                            <StackLayout>
+                                <Label
+                                    FontSize="14"
+                                    HorizontalOptions="Center"
+                                    Text="💸 Total de Dividendos"
+                                    TextColor="DarkGreen" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="20"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding TotalDividends, StringFormat='{0:C}'}"
+                                    TextColor="DarkGreen" />
+                            </StackLayout>
+                        </Frame>
+
+                        <CollectionView BackgroundColor="Transparent" ItemsSource="{Binding Dividends}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,3"
+                                        Padding="12"
+                                        BackgroundColor="{StaticResource LightGray}"
+                                        CornerRadius="10">
+                                        <Grid ColumnDefinitions="*,Auto,30">
+
+                                            <StackLayout Grid.Column="0">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="{Binding Asset.Symbol}"
+                                                    TextColor="DarkSlateGray" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Type}"
+                                                    TextColor="Green" />
+                                                <Label
+                                                    FontSize="11"
+                                                    Text="{Binding PaymentDate, StringFormat='Pago em: {0:dd/MM/yyyy}'}"
+                                                    TextColor="Gray" />
+                                            </StackLayout>
+
+                                            <Label
+                                                Grid.Column="1"
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding AmountPerShare, StringFormat='{0:C}/ação'}"
+                                                TextColor="Green"
+                                                VerticalOptions="Center" />
+
+                                            <Button
+                                                Grid.Column="2"
+                                                BackgroundColor="Transparent"
+                                                Clicked="OnItemMenuClicked"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="16"
+                                                Text="⋮"
+                                                TextColor="Gray" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Conteúdo da Aba Metas  -->
+            <StackLayout x:Name="GoalsContent" IsVisible="False">
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="🎯 Metas de Investimento"
+                                TextColor="DarkSlateGray"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Grid.Column="1"
+                                Padding="15,8"
+                                BackgroundColor="{StaticResource PrimaryGreen}"
+                                Clicked="OnAddGoalClicked"
+                                CornerRadius="15"
+                                FontSize="12"
+                                Text="➕ Nova Meta"
+                                TextColor="White" />
+                        </Grid>
+
+                        <CollectionView BackgroundColor="Transparent" ItemsSource="{Binding InvestmentGoals}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,5"
+                                        Padding="15"
+                                        BackgroundColor="{StaticResource LightGray}"
+                                        CornerRadius="12">
+                                        <StackLayout Spacing="10">
+
+                                            <Grid ColumnDefinitions="*,Auto,30">
+                                                <StackLayout Grid.Column="0">
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        FontSize="16"
+                                                        Text="{Binding Name}"
+                                                        TextColor="DarkSlateGray" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        Text="{Binding Type}"
+                                                        TextColor="Blue" />
+                                                </StackLayout>
+
+                                                <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                                    <Label
+                                                        FontSize="12"
+                                                        Text="{Binding TargetAmount, StringFormat='Meta: {0:C}'}"
+                                                        TextColor="DarkSlateGray" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        Text="{Binding CurrentAmount, StringFormat='Atual: {0:C}'}"
+                                                        TextColor="Green" />
+                                                </StackLayout>
+
+                                                <Button
+                                                    Grid.Column="2"
+                                                    BackgroundColor="Transparent"
+                                                    Clicked="OnItemMenuClicked"
+                                                    CommandParameter="{Binding .}"
+                                                    FontSize="16"
+                                                    Text="⋮"
+                                                    TextColor="Gray" />
+                                            </Grid>
+
+                                            <ProgressBar Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}" ProgressColor="Green" />
+
+                                            <Grid ColumnDefinitions="*,*">
+                                                <Label
+                                                    Grid.Column="0"
+                                                    FontSize="12"
+                                                    Text="{Binding ProgressPercentage, StringFormat='Progresso: {0:F1}%'}"
+                                                    TextColor="Gray" />
+                                                <Label
+                                                    Grid.Column="1"
+                                                    FontSize="12"
+                                                    HorizontalOptions="End"
+                                                    Text="{Binding TargetDate, StringFormat='Prazo: {0:dd/MM/yyyy}'}"
+                                                    TextColor="Gray" />
+                                            </Grid>
+                                        </StackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  Botões de Ação Secundários  -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <Button
+                    Grid.Column="0"
+                    Padding="10"
+                    BackgroundColor="Orange"
+                    Clicked="OnCheckAlertsClicked"
+                    CornerRadius="20"
+                    FontSize="12"
+                    Text="🔔 Alertas"
+                    TextColor="White" />
+
+                <Button
+                    Grid.Column="1"
+                    Padding="10"
+                    BackgroundColor="Purple"
+                    Clicked="OnTaxReportClicked"
+                    CornerRadius="20"
+                    FontSize="12"
+                    Text="📊 Impostos"
+                    TextColor="White" />
+
+                <Button
+                    Grid.Column="2"
+                    Padding="10"
+                    BackgroundColor="Gray"
+                    Clicked="OnRefreshClicked"
+                    CornerRadius="20"
+                    FontSize="12"
+                    Text="🔄 Atualizar"
+                    TextColor="White" />
+            </Grid>
+
+            <!--  Loading Indicator  -->
+            <ActivityIndicator
+                HeightRequest="50"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                Color="{StaticResource PrimaryBlue}" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

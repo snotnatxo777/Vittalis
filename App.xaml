@@ -16,6 +16,9 @@
             <helpers:CategoryToIconConverter x:Key="CategoryToIconConverter" />
             <helpers:NotNullConverter x:Key="NotNullConverter" />
             <helpers:PercentageToProgressConverter x:Key="PercentageToProgressConverter" />
+            <helpers:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <helpers:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <helpers:CashFlowProgressConverter x:Key="CashFlowProgressConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
