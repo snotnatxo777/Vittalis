@@ -1,5 +1,7 @@
-ï»¿using Vittalis.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Vittalis.Services;
+using Vittalis.ViewModels;
+using System.Globalization;
 
 namespace Vittalis.Views;
 
@@ -9,301 +11,85 @@ public partial class InvestmentPage : ContentPage
 
     public InvestmentPage(InvestmentViewModel viewModel)
     {
+        InitializeComponent();
         _viewModel = viewModel;
-        BindingContext = viewModel;
-        CreateUI();
-    }
+        BindingContext = _viewModel;
 
-
-    private void CreateUI()
-    {
-        Title = "Investimentos";
-
-        // Labels com binding
-        var totalValueLabel = new Label
-        {
-            FontSize = 24,
-            FontAttributes = FontAttributes.Bold,
-            HorizontalOptions = LayoutOptions.Center,
-            TextColor = Colors.Blue
-        };
-        totalValueLabel.SetBinding(Label.TextProperty, new Binding("TotalPortfolioValue", stringFormat: "{0:C}"));
-
-        var totalInvestedLabel = new Label
-        {
-            FontSize = 16,
-            HorizontalOptions = LayoutOptions.Center,
-            TextColor = Colors.Gray
-        };
-        totalInvestedLabel.SetBinding(Label.TextProperty, new Binding("TotalInvested", stringFormat: "Investido: {0:C}"));
-
-        var profitLossLabel = new Label
-        {
-            FontSize = 18,
-            FontAttributes = FontAttributes.Bold,
-            HorizontalOptions = LayoutOptions.Center
-        };
-        profitLossLabel.SetBinding(Label.TextProperty, new Binding("TotalProfitLoss", stringFormat: "{0:C}"));
-        profitLossLabel.SetBinding(Label.TextColorProperty, new Binding("TotalProfitLoss", converter: new ProfitLossColorConverter()));
-
-        var profitLossPercentageLabel = new Label
-        {
-            FontSize = 14,
-            HorizontalOptions = LayoutOptions.Center
-        };
-        profitLossPercentageLabel.SetBinding(Label.TextProperty, new Binding("TotalProfitLossPercentage", stringFormat: "({0:F2}%)"));
-        profitLossPercentageLabel.SetBinding(Label.TextColorProperty, new Binding("TotalProfitLoss", converter: new ProfitLossColorConverter()));
-
-        // BotÃµes
-        var addTradeButton = new Button
-        {
-            Text = "Nova OperaÃ§Ã£o",
-            BackgroundColor = Colors.Green,
-            TextColor = Colors.White,
-            Margin = 10
-        };
-        addTradeButton.Clicked += OnAddTradeClicked;
-
-        var refreshButton = new Button
-        {
-            Text = "Atualizar",
-            BackgroundColor = Colors.Blue,
-            TextColor = Colors.White,
-            Margin = 10
-        };
-        refreshButton.Clicked += async (s, e) => await _viewModel.RefreshAsync();
-
-        Content = new ScrollView
-        {
-            Content = new StackLayout
-            {
-                Spacing = 15,
-                Children =
-                {
-                    new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Children = { addTradeButton, refreshButton }
-                    },
-
-                    // Resumo do portfÃ³lio
-                    new Frame
-                    {
-                        BackgroundColor = Colors.LightBlue,
-                        CornerRadius = 10,
-                        HasShadow = true,
-                        Margin = 15,
-                        Content = new StackLayout
-                        {
-                            Spacing = 10,
-                            Children =
-                            {
-                                new Label { Text = "Valor Total do PortfÃ³lio", FontSize = 16, HorizontalOptions = LayoutOptions.Center, TextColor = Colors.DimGray },
-                                totalValueLabel,
-                                totalInvestedLabel,
-                                new StackLayout
-                                {
-                                    Orientation = StackOrientation.Horizontal,
-                                    HorizontalOptions = LayoutOptions.Center,
-                                    Children = { profitLossLabel, profitLossPercentageLabel }
-                                }
-                            }
-                        }
-                    },
-
-                    // Lista do portfÃ³lio
-                    new Label { Text = "Meu PortfÃ³lio", FontSize = 18, FontAttributes = FontAttributes.Bold, Margin = new Thickness(15, 0), TextColor = Colors.DimGray },
-                    CreatePortfolioList(),
-
-                    // OperaÃ§Ãµes recentes
-                    new Label { Text = "OperaÃ§Ãµes Recentes", FontSize = 18, FontAttributes = FontAttributes.Bold, Margin = new Thickness(15, 0), TextColor = Colors.DimGray },
-                    CreateTradesList()
-                }
-            }
-        };
-    }
-
-    private CollectionView CreatePortfolioList()
-    {
-        var collectionView = new CollectionView
-        {
-            HeightRequest = 300,
-            Margin = 15
-        };
-
-        collectionView.SetBinding(ItemsView.ItemsSourceProperty, "Portfolio");
-
-        collectionView.ItemTemplate = new DataTemplate(() =>
-        {
-            var frame = new Frame
-            {
-                BackgroundColor = Colors.White,
-                CornerRadius = 8,
-                HasShadow = true,
-                Margin = new Thickness(0, 5),
-                Padding = 15
-            };
-
-            var grid = new Grid
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = GridLength.Star },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto }
-                }
-            };
-
-            var leftStack = new StackLayout();
-
-            var symbolLabel = new Label { FontSize = 16, FontAttributes = FontAttributes.Bold, TextColor = Colors.DimGray };
-            symbolLabel.SetBinding(Label.TextProperty, "AssetSymbol");
-
-            var nameLabel = new Label { FontSize = 12, TextColor = Colors.Gray };
-            nameLabel.SetBinding(Label.TextProperty, "AssetName");
-
-            var quantityLabel = new Label { FontSize = 12, TextColor = Colors.Gray };
-            quantityLabel.SetBinding(Label.TextProperty, new Binding("TotalQuantity", stringFormat: "Quantidade: {0}"));
-
-            leftStack.Children.Add(symbolLabel);
-            leftStack.Children.Add(nameLabel);
-            leftStack.Children.Add(quantityLabel);
-
-            var valueLabel = new Label
-            {
-                FontSize = 16,
-                FontAttributes = FontAttributes.Bold,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.End,
-                TextColor = Colors.DimGray
-            };
-            valueLabel.SetBinding(Label.TextProperty, new Binding("CurrentValue", stringFormat: "{0:C}"));
-
-            var profitLabel = new Label
-            {
-                FontSize = 12,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.End
-            };
-            profitLabel.SetBinding(Label.TextProperty, new Binding("ProfitLoss", stringFormat: "{0:C}"));
-            profitLabel.SetBinding(Label.TextColorProperty, new Binding("ProfitLoss", converter: new ProfitLossColorConverter()));
-
-            Grid.SetColumn(leftStack, 0);
-            Grid.SetColumn(valueLabel, 1);
-            Grid.SetColumn(profitLabel, 2);
-
-            grid.Children.Add(leftStack);
-            grid.Children.Add(valueLabel);
-            grid.Children.Add(profitLabel);
-
-            frame.Content = grid;
-            return frame;
-        });
-
-        return collectionView;
-    }
-
-    private CollectionView CreateTradesList()
-    {
-        var collectionView = new CollectionView
-        {
-            HeightRequest = 200,
-            Margin = 15
-        };
-
-        collectionView.SetBinding(ItemsView.ItemsSourceProperty, "RecentTrades");
-
-        collectionView.ItemTemplate = new DataTemplate(() =>
-        {
-            var grid = new Grid
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = GridLength.Star },
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto }
-                },
-                Margin = new Thickness(15, 5),
-                Padding = new Thickness(0, 10)
-            };
-
-            var leftStack = new StackLayout();
-
-            var assetLabel = new Label { FontSize = 14, FontAttributes = FontAttributes.Bold, TextColor = Colors.DimGray };
-            assetLabel.SetBinding(Label.TextProperty, "Asset.Symbol");
-
-            var typeLabel = new Label { FontSize = 12, TextColor = Colors.Gray };
-            typeLabel.SetBinding(Label.TextProperty, "Type");
-
-            var dateLabel = new Label { FontSize = 12, TextColor = Colors.Gray };
-            dateLabel.SetBinding(Label.TextProperty, new Binding("Date", stringFormat: "{0:dd/MM/yyyy}"));
-
-            leftStack.Children.Add(assetLabel);
-            leftStack.Children.Add(typeLabel);
-            leftStack.Children.Add(dateLabel);
-
-            var quantityLabel = new Label
-            {
-                FontSize = 14,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.End,
-                TextColor = Colors.DimGray
-            };
-            quantityLabel.SetBinding(Label.TextProperty, new Binding("Quantity", stringFormat: "{0} un"));
-
-            var valueLabel = new Label
-            {
-                FontSize = 14,
-                FontAttributes = FontAttributes.Bold,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.End,
-                TextColor = Colors.DimGray
-            };
-            valueLabel.SetBinding(Label.TextProperty, new Binding("TotalCost", stringFormat: "{0:C}"));
-
-            Grid.SetColumn(leftStack, 0);
-            Grid.SetColumn(quantityLabel, 1);
-            Grid.SetColumn(valueLabel, 2);
-
-            grid.Children.Add(leftStack);
-            grid.Children.Add(quantityLabel);
-            grid.Children.Add(valueLabel);
-
-            return grid;
-        });
-
-        return collectionView;
+        // Adicionar os conversores como recursos da página
+        Resources.Add("ProfitLossToBoolean", new ProfitLossToBooleanConverter());
     }
 
     private async void OnAddTradeClicked(object sender, EventArgs e)
     {
-        var serviceProvider = Handler?.MauiContext?.Services;
-        if (serviceProvider != null)
+        try
         {
-            var investmentService = serviceProvider.GetService<IInvestmentService>();
-            if (investmentService != null)
+            var serviceProvider = Handler?.MauiContext?.Services;
+            if (serviceProvider != null)
             {
-                var addTradePage = new AddTradePage(investmentService);
-                await Navigation.PushAsync(addTradePage);
+                var investmentService = serviceProvider.GetService<IInvestmentService>();
+                if (investmentService != null)
+                {
+                    // Criar e navegar para AddTradePage
+                    var addTradePage = new AddTradePage(investmentService);
+                    await Navigation.PushAsync(addTradePage);
+                }
+                else
+                {
+                    await DisplayAlert("Erro", "Serviço de investimentos não disponível", "OK");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Erro ao abrir página de trade: {ex.Message}", "OK");
+        }
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        try
+        {
+            // Atualizar dados quando a página aparecer
+            await _viewModel.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Erro ao carregar dados: {ex.Message}", "OK");
         }
     }
 }
 
-// Converter para cores de lucro/prejuÃ­zo
-public class ProfitLossColorConverter : IValueConverter
+// Converter para determinar se um valor é positivo ou negativo (para cores)
+public class ProfitLossToBooleanConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is decimal amount)
+        if (value is decimal decimalValue)
         {
-            return amount >= 0 ? Colors.Green : Colors.Red;
+            return decimalValue >= 0;
         }
-        return Colors.Gray;
+
+        if (value is double doubleValue)
+        {
+            return doubleValue >= 0;
+        }
+
+        if (value is float floatValue)
+        {
+            return floatValue >= 0;
+        }
+
+        if (value is int intValue)
+        {
+            return intValue >= 0;
+        }
+
+        return true; // Default para verdadeiro (verde)
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

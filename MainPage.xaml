@@ -67,6 +67,12 @@
                 Clicked="OnCreditCardsClicked"
                 Text="Cartões de Crédito"
                 TextColor="White" />
+
+            <Button
+                BackgroundColor="MediumPurple"
+                Clicked="OnAdvancedReportsClicked"
+                Text="📊 Relatórios Avançados"
+                TextColor="White" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

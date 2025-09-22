@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vittalis.Views.InvestmentPage"
+             Title="Investimentos"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <!-- Resumo do Portfolio -->
+            <Frame BackgroundColor="LightBlue" HasShadow="True" CornerRadius="10" Padding="15">
+                <StackLayout>
+                    <Label Text="Resumo do Portfolio" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center"
+                           TextColor="DarkBlue" />
+
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10">
+
+                        <!-- Valor Total -->
+                        <StackLayout Grid.Column="0" Grid.Row="0">
+                            <Label Text="Valor Total" FontSize="12" TextColor="DarkBlue" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalPortfolioValue, StringFormat='{0:C}'}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="DarkBlue"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+
+                        <!-- Total Investido -->
+                        <StackLayout Grid.Column="1" Grid.Row="0">
+                            <Label Text="Investido" FontSize="12" TextColor="DarkBlue" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalInvested, StringFormat='{0:C}'}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   TextColor="DarkBlue"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+
+                        <!-- Lucro/Prejuízo -->
+                        <StackLayout Grid.Column="2" Grid.Row="0">
+                            <Label Text="Resultado" FontSize="12" TextColor="DarkBlue" HorizontalOptions="Center" />
+                            <Label Text="{Binding TotalProfitLoss, StringFormat='{0:C}'}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold" 
+                                   HorizontalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TotalProfitLoss, Converter={StaticResource ProfitLossToBoolean}}" Value="True">
+                                        <Setter Property="TextColor" Value="Green" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TotalProfitLoss, Converter={StaticResource ProfitLossToBoolean}}" Value="False">
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </StackLayout>
+
+                        <!-- Percentual -->
+                        <StackLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center">
+                            <Label Text="Rentabilidade: " FontSize="14" TextColor="DarkBlue" />
+                            <Label Text="{Binding TotalProfitLossPercentage, StringFormat='{0:F2}%'}" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TotalProfitLossPercentage, Converter={StaticResource ProfitLossToBoolean}}" Value="True">
+                                        <Setter Property="TextColor" Value="Green" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TotalProfitLossPercentage, Converter={StaticResource ProfitLossToBoolean}}" Value="False">
+                                        <Setter Property="TextColor" Value="Red" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </StackLayout>
+
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <!-- Botão Adicionar Trade -->
+            <Button Text="+ Adicionar Trade" 
+                    BackgroundColor="Green" 
+                    TextColor="White" 
+                    FontAttributes="Bold"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Clicked="OnAddTradeClicked" />
+
+            <!-- Portfolio -->
+            <Frame BackgroundColor="LightGray" HasShadow="True" CornerRadius="10" Padding="15">
+                <StackLayout>
+                    <Label Text="Meu Portfolio" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           TextColor="DarkSlateGray" />
+
+                    <CollectionView x:Name="PortfolioCollectionView"
+                                    ItemsSource="{Binding Portfolio}"
+                                    BackgroundColor="Transparent">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10" ColumnDefinitions="*,Auto,Auto" RowSpacing="5">
+
+                                    <!-- Informações do Ativo -->
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding AssetSymbol}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="DarkSlateGray" />
+                                        <Label Text="{Binding AssetName}" 
+                                               FontSize="12" 
+                                               TextColor="Gray" />
+                                        <Label Text="{Binding Quantity, StringFormat='{0} unidades'}" 
+                                               FontSize="12" 
+                                               TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <!-- Valor -->
+                                    <StackLayout Grid.Column="1" HorizontalOptions="End">
+                                        <Label Text="{Binding CurrentValue, StringFormat='{0:C}'}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold" 
+                                               TextColor="DarkSlateGray" 
+                                               HorizontalOptions="End" />
+                                        <Label Text="{Binding ProfitLoss, StringFormat='{0:C}'}" 
+                                               FontSize="12" 
+                                               HorizontalOptions="End">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ProfitLoss, Converter={StaticResource ProfitLossToBoolean}}" Value="True">
+                                                    <Setter Property="TextColor" Value="Green" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding ProfitLoss, Converter={StaticResource ProfitLossToBoolean}}" Value="False">
+                                                    <Setter Property="TextColor" Value="Red" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+
+                                    <!-- Percentual -->
+                                    <Label Grid.Column="2" 
+                                           Text="{Binding ProfitLossPercentage, StringFormat='{0:F1}%'}" 
+                                           FontSize="12"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           Margin="10,0,0,0">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding ProfitLossPercentage, Converter={StaticResource ProfitLossToBoolean}}" Value="True">
+                                                <Setter Property="TextColor" Value="Green" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding ProfitLossPercentage, Converter={StaticResource ProfitLossToBoolean}}" Value="False">
+                                                <Setter Property="TextColor" Value="Red" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+
+            <!-- Trades Recentes -->
+            <Frame BackgroundColor="LightYellow" HasShadow="True" CornerRadius="10" Padding="15">
+                <StackLayout>
+                    <Label Text="Trades Recentes" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           TextColor="DarkOrange" />
+
+                    <CollectionView x:Name="RecentTradesCollectionView"
+                                    ItemsSource="{Binding RecentTrades}"
+                                    BackgroundColor="Transparent">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="8" ColumnDefinitions="*,Auto,Auto" RowSpacing="3">
+
+                                    <!-- Informações do Trade -->
+                                    <StackLayout Grid.Column="0">
+                                        <Label Text="{Binding Asset.Symbol}" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold" 
+                                               TextColor="DarkOrange" />
+                                        <Label Text="{Binding Type}" 
+                                               FontSize="12" 
+                                               TextColor="Gray" />
+                                        <Label Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}" 
+                                               FontSize="10" 
+                                               TextColor="Gray" />
+                                    </StackLayout>
+
+                                    <!-- Quantidade -->
+                                    <Label Grid.Column="1" 
+                                           Text="{Binding Quantity, StringFormat='{0} un'}" 
+                                           FontSize="12" 
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           TextColor="DarkOrange" />
+
+                                    <!-- Valor Total -->
+                                    <Label Grid.Column="2" 
+                                           Text="{Binding TotalCost, StringFormat='{0:C}'}" 
+                                           FontSize="12" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           TextColor="DarkOrange"
+                                           Margin="10,0,0,0" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsVisible="{Binding IsLoading}" 
+                               IsRunning="{Binding IsLoading}" 
+                               Color="Blue" 
+                               HeightRequest="50" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

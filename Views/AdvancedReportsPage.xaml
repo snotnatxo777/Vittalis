@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Vittalis.Views.AdvancedReportsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    Title="Relatórios Avançados">
+
+    <ScrollView>
+        <StackLayout Spacing="20">
+
+            <!--  Header com seletor de relatório  -->
+            <StackLayout Padding="15" Spacing="15">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="📊 Relatórios Avançados" />
+
+                <!--  Seletor de tipo de relatório  -->
+                <Frame
+                    Padding="15"
+                    BackgroundColor="LightBlue"
+                    CornerRadius="10"
+                    HasShadow="True">
+                    <StackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Tipo de Relatório" />
+
+                        <Picker
+                            x:Name="ReportTypePicker"
+                            Title="Selecione o relatório"
+                            FontSize="16"
+                            HorizontalOptions="FillAndExpand"
+                            ItemsSource="{Binding AvailableReportTypes}"
+                            SelectedItem="{Binding SelectedReportType}" />
+
+                        <!--  Filtro por conta  -->
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label
+                                FontSize="14"
+                                Text="Conta:"
+                                VerticalOptions="Center" />
+                            <Picker
+                                x:Name="AccountPicker"
+                                Title="Todas as contas"
+                                FontSize="14"
+                                HorizontalOptions="FillAndExpand"
+                                ItemsSource="{Binding AccountDisplayNames}"
+                                SelectedItem="{Binding SelectedAccountName}" />
+                            <Button
+                                BackgroundColor="Orange"
+                                Clicked="OnExportClicked"
+                                FontSize="12"
+                                Text="📤 Exportar"
+                                TextColor="White"
+                                WidthRequest="80" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  SAÚDE FINANCEIRA  -->
+            <StackLayout Padding="15" IsVisible="{Binding SelectedReportType, Converter={StaticResource StringToBoolConverter}, ConverterParameter='FinancialHealth'}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="💪 Saúde Financeira" />
+
+                <!--  Score geral  -->
+                <Frame
+                    Padding="20"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+
+                        <StackLayout Grid.Row="0" Grid.Column="0">
+                            <Label
+                                FontSize="16"
+                                Text="Score Geral"
+                                TextColor="DimGray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="28"
+                                Text="{Binding HealthScoreText}"
+                                TextColor="{Binding HealthScoreColor}" />
+                        </StackLayout>
+
+                        <StackLayout
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalOptions="End">
+                            <Label
+                                FontSize="40"
+                                HorizontalOptions="Center"
+                                Text="💯" />
+                            <Label
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                IsVisible="{Binding HasCriticalAlerts}"
+                                Text="⚠️ Alertas"
+                                TextColor="Red" />
+                        </StackLayout>
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Margin="0,10,0,0"
+                            FontSize="14"
+                            Text="{Binding HealthSummary}"
+                            TextColor="DimGray" />
+
+                        <!--  Indicadores rápidos  -->
+                        <Grid
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
+                            Margin="0,15,0,0"
+                            ColumnDefinitions="*,*,*"
+                            ColumnSpacing="10">
+
+                            <Frame
+                                Grid.Column="0"
+                                Padding="10"
+                                BackgroundColor="LightGreen"
+                                CornerRadius="8">
+                                <StackLayout>
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="Taxa Poupança"
+                                        TextColor="DimGray" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding HealthIndicators.SavingsRate, StringFormat='{0:F1}%'}"
+                                        TextColor="DarkGreen" />
+                                </StackLayout>
+                            </Frame>
+
+                            <Frame
+                                Grid.Column="1"
+                                Padding="10"
+                                BackgroundColor="LightCoral"
+                                CornerRadius="8">
+                                <StackLayout>
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="Reserva Emerg."
+                                        TextColor="DimGray" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding HealthIndicators.EmergencyFundMonths, StringFormat='{0:F1} meses'}"
+                                        TextColor="DarkRed" />
+                                </StackLayout>
+                            </Frame>
+
+                            <Frame
+                                Grid.Column="2"
+                                Padding="10"
+                                BackgroundColor="LightYellow"
+                                CornerRadius="8">
+                                <StackLayout>
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="Alertas"
+                                        TextColor="DimGray" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding AlertCount}"
+                                        TextColor="Orange" />
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </Grid>
+                </Frame>
+
+                <!--  Lista de alertas  -->
+                <CollectionView
+                    HeightRequest="150"
+                    IsVisible="{Binding AlertCount, Converter={StaticResource IntToBoolConverter}}"
+                    ItemsSource="{Binding HealthIndicators.Alerts}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="15"
+                                BackgroundColor="White"
+                                CornerRadius="8"
+                                HasShadow="True">
+                                <Grid ColumnDefinitions="40,*">
+                                    <Label
+                                        Grid.Column="0"
+                                        FontSize="20"
+                                        Text="{Binding Icon}"
+                                        VerticalOptions="Center" />
+                                    <StackLayout Grid.Column="1">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            Text="{Binding Title}"
+                                            TextColor="{Binding Color}" />
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding Message}"
+                                            TextColor="DimGray" />
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  PROJEÇÕES FINANCEIRAS  -->
+            <StackLayout Padding="15" IsVisible="{Binding SelectedReportType, Converter={StaticResource StringToBoolConverter}, ConverterParameter='Projections'}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="🔮 Projeções Financeiras" />
+
+                <!--  Resumo das projeções  -->
+                <Frame
+                    Padding="20"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Poupança Projetada (12 meses)"
+                            TextColor="DimGray" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="28"
+                            HorizontalOptions="Center"
+                            Text="{Binding ProjectedSavingsText}"
+                            TextColor="{Binding ProjectedSavingsColor}" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Gráfico de projeções  -->
+                <Frame
+                    Margin="0,10"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HasShadow="True"
+                    HeightRequest="300">
+                    <microcharts:ChartView x:Name="ProjectionsChart" BackgroundColor="Transparent" />
+                </Frame>
+
+                <!--  Lista detalhada das projeções  -->
+                <CollectionView HeightRequest="200" ItemsSource="{Binding FinancialProjections}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Margin="0,3"
+                                Padding="10"
+                                ColumnDefinitions="100,*,80,80">
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="12"
+                                    Text="{Binding Date, StringFormat='{0:MMM yyyy}'}"
+                                    VerticalOptions="Center" />
+                                <ProgressBar
+                                    Grid.Column="1"
+                                    Margin="10,0"
+                                    Progress="0.5"
+                                    ProgressColor="Green"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding ProjectedIncome, StringFormat='{0:C0}'}"
+                                    TextColor="Green"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="3"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding ProjectedExpense, StringFormat='{0:C0}'}"
+                                    TextColor="Red"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  ANÁLISE DE TENDÊNCIAS  -->
+            <StackLayout Padding="15" IsVisible="{Binding SelectedReportType, Converter={StaticResource StringToBoolConverter}, ConverterParameter='Trends'}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="📈 Análise de Tendências" />
+
+                <!--  Gráficos de tendências  -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Frame
+                        Grid.Column="0"
+                        BackgroundColor="White"
+                        CornerRadius="10"
+                        HasShadow="True"
+                        HeightRequest="200">
+                        <StackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="Receitas"
+                                TextColor="Green" />
+                            <microcharts:ChartView x:Name="IncomeTrendsChart" BackgroundColor="Transparent" />
+                        </StackLayout>
+                    </Frame>
+
+                    <Frame
+                        Grid.Column="1"
+                        BackgroundColor="White"
+                        CornerRadius="10"
+                        HasShadow="True"
+                        HeightRequest="200">
+                        <StackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Text="Despesas"
+                                TextColor="Red" />
+                            <microcharts:ChartView x:Name="ExpenseTrendsChart" BackgroundColor="Transparent" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <!--  Insights das tendências  -->
+                <Frame
+                    Margin="0,10"
+                    Padding="15"
+                    BackgroundColor="LightYellow"
+                    CornerRadius="10">
+                    <StackLayout>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="💡 Insights"
+                            TextColor="Orange" />
+                        <Label
+                            FontSize="14"
+                            Text="• Suas receitas tiveram crescimento de 5% no último trimestre"
+                            TextColor="DimGray" />
+                        <Label
+                            FontSize="14"
+                            Text="• Gastos com alimentação aumentaram 12% comparado ao mês anterior"
+                            TextColor="DimGray" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding TopGrowingCategory, StringFormat='• Categoria com maior crescimento: {0}'}"
+                            TextColor="DimGray" />
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!--  ANÁLISE DE CATEGORIAS  -->
+            <StackLayout Padding="15" IsVisible="{Binding SelectedReportType, Converter={StaticResource StringToBoolConverter}, ConverterParameter='Categories'}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="🏷️ Análise de Categorias" />
+
+                <CollectionView ItemsSource="{Binding CategoryAnalyses}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Margin="0,5"
+                                Padding="15"
+                                BackgroundColor="White"
+                                CornerRadius="10"
+                                HasShadow="True">
+                                <StackLayout Spacing="10">
+                                    <!--  Header da categoria  -->
+                                    <Grid ColumnDefinitions="40,*,80">
+                                        <Label
+                                            Grid.Column="0"
+                                            FontSize="20"
+                                            Text="{Binding CategoryIcon}"
+                                            VerticalOptions="Center" />
+                                        <StackLayout Grid.Column="1">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding CategoryName}"
+                                                TextColor="DimGray" />
+                                            <Label
+                                                FontSize="12"
+                                                Text="{Binding Recommendation}"
+                                                TextColor="Orange" />
+                                        </StackLayout>
+                                        <Label
+                                            Grid.Column="2"
+                                            FontAttributes="Bold"
+                                            FontSize="16"
+                                            HorizontalOptions="End"
+                                            Text="{Binding CurrentAmount, StringFormat='{0:C}'}"
+                                            TextColor="DimGray"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+
+                                    <!--  Estatísticas  -->
+                                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="5">
+                                        <StackLayout Grid.Column="0">
+                                            <Label
+                                                FontSize="10"
+                                                HorizontalOptions="Center"
+                                                Text="Média"
+                                                TextColor="Gray" />
+                                            <Label
+                                                FontSize="12"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding AverageAmount, StringFormat='{0:C0}'}"
+                                                TextColor="DimGray" />
+                                        </StackLayout>
+                                        <StackLayout Grid.Column="1">
+                                            <Label
+                                                FontSize="10"
+                                                HorizontalOptions="Center"
+                                                Text="Maior"
+                                                TextColor="Gray" />
+                                            <Label
+                                                FontSize="12"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding WorstMonth, StringFormat='{0:C0}'}"
+                                                TextColor="Red" />
+                                        </StackLayout>
+                                        <StackLayout Grid.Column="2">
+                                            <Label
+                                                FontSize="10"
+                                                HorizontalOptions="Center"
+                                                Text="Crescimento"
+                                                TextColor="Gray" />
+                                            <Label
+                                                FontSize="12"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding GrowthRate, StringFormat='{0:F1}%'}"
+                                                TextColor="{Binding GrowthRate, Converter={StaticResource ProfitLossColorConverter}}" />
+                                        </StackLayout>
+                                    </Grid>
+
+                                    <!--  Gráfico mini da categoria  -->
+                                    <ProgressBar Progress="0.7" ProgressColor="Orange" />
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  FLUXO DE CAIXA  -->
+            <StackLayout Padding="15" IsVisible="{Binding SelectedReportType, Converter={StaticResource StringToBoolConverter}, ConverterParameter='CashFlow'}">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    Text="💰 Fluxo de Caixa" />
+
+                <!--  Resumo do cash flow  -->
+                <Frame
+                    Padding="20"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <StackLayout>
+                        <Label
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Fluxo de Caixa Acumulado"
+                            TextColor="DimGray" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="28"
+                            HorizontalOptions="Center"
+                            Text="{Binding PredictedCashFlow, StringFormat='{0:C}'}"
+                            TextColor="{Binding PredictedCashFlow, Converter={StaticResource ProfitLossColorConverter}}" />
+                    </StackLayout>
+                </Frame>
+
+                <!--  Gráfico de fluxo de caixa  -->
+                <Frame
+                    Margin="0,10"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HasShadow="True"
+                    HeightRequest="300">
+                    <microcharts:ChartView x:Name="CashFlowChart" BackgroundColor="Transparent" />
+                </Frame>
+
+                <!--  Lista detalhada dos períodos  -->
+                <CollectionView HeightRequest="200" ItemsSource="{Binding CashFlowPeriods}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Margin="0,3"
+                                Padding="10"
+                                ColumnDefinitions="80,*,70,70,70">
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="12"
+                                    Text="{Binding PeriodName}"
+                                    VerticalOptions="Center" />
+                                <ProgressBar
+                                    Grid.Column="1"
+                                    Margin="10,0"
+                                    Progress="{Binding NetFlow, Converter={StaticResource CashFlowProgressConverter}}"
+                                    ProgressColor="{Binding NetFlow, Converter={StaticResource ProfitLossColorConverter}}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    FontSize="11"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Income, StringFormat='{0:C0}'}"
+                                    TextColor="Green"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="3"
+                                    FontSize="11"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Expense, StringFormat='{0:C0}'}"
+                                    TextColor="Red"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="4"
+                                    FontAttributes="Bold"
+                                    FontSize="11"
+                                    HorizontalOptions="End"
+                                    Text="{Binding NetFlow, StringFormat='{0:C0}'}"
+                                    TextColor="{Binding NetFlow, Converter={StaticResource ProfitLossColorConverter}}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!--  Botões de ação  -->
+            <StackLayout
+                Padding="15"
+                Orientation="Horizontal"
+                Spacing="10">
+                <Button
+                    BackgroundColor="Blue"
+                    Clicked="OnRefreshClicked"
+                    HorizontalOptions="FillAndExpand"
+                    Text="🔄 Atualizar"
+                    TextColor="White" />
+                <Button
+                    BackgroundColor="Green"
+                    Clicked="OnCustomReportClicked"
+                    HorizontalOptions="FillAndExpand"
+                    Text="📋 Personalizar"
+                    TextColor="White" />
+                <Button
+                    BackgroundColor="Purple"
+                    Clicked="OnScheduleClicked"
+                    HorizontalOptions="FillAndExpand"
+                    Text="⏰ Agendar"
+                    TextColor="White" />
+            </StackLayout>
+
+            <!--  Loading indicator  -->
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="Blue" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

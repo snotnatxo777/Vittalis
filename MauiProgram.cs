@@ -39,6 +39,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ISpendingGoalService, SpendingGoalService>();
         builder.Services.AddTransient<ComparisonViewModel>();
         builder.Services.AddScoped<ICreditCardService, CreditCardService>();
+        builder.Services.AddScoped<IAdvancedReportService, AdvancedReportService>();
 
         // Registrar ViewModels
         builder.Services.AddTransient<TransactionListViewModel>();
@@ -49,6 +50,7 @@ public static class MauiProgram
         builder.Services.AddTransient<RecurringTransactionsViewModel>();
         builder.Services.AddTransient<SpendingGoalsViewModel>();
         builder.Services.AddTransient<CreditCardViewModel>();
+        builder.Services.AddTransient<AdvancedReportsViewModel>();
 
         // Registrar Views
         builder.Services.AddTransient<TransactionListPage>();
@@ -66,6 +68,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CreditCardsPage>();
         builder.Services.AddTransient<AddCreditCardPage>();
         builder.Services.AddTransient<AddCreditCardTransactionPage>();
+        builder.Services.AddTransient<AdvancedReportsPage>();
 
         return builder.Build();
     }
